@@ -1,0 +1,134 @@
+---
+import '../styles/global.css'
+import { BIZ, waLink } from '../lib/catalog.js'
+
+const { title = 'Quisqueya by Piaroa — Piezas que definen espacios', description = 'Piezas decorativas, cojines y velas hechas a mano en República Dominicana. Visita nuestro showroom en Santo Domingo o escríbenos por WhatsApp.' } = Astro.props
+const wa = waLink()
+---
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪢</text></svg>" />
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a href="/" class="brand">
+        <span class="brand-name">Quisqueya</span>
+        <span class="brand-sub">by Piaroa</span>
+      </a>
+      <nav class="links" aria-label="Categorías">
+        <a href="/velas">Velas</a>
+        <a href="/cojines">Cojines</a>
+        <a href="/piezas">Piezas</a>
+        <a href="/#showroom">Showroom</a>
+      </nav>
+      <a class="btn btn-solid nav-wa" href={wa} target="_blank" rel="noopener">WhatsApp</a>
+    </div>
+  </header>
+
+  <main>
+    <slot />
+  </main>
+
+  <footer id="showroom" class="footer">
+    <div class="wrap footer-grid">
+      <div>
+        <p class="eyebrow">Showroom</p>
+        <h3 class="serif footer-title">Visítanos en Santo Domingo</h3>
+        <p class="footer-line">{BIZ.address}</p>
+        <p class="footer-line">{BIZ.hours}</p>
+        <p class="footer-line">{BIZ.phoneDisplay}</p>
+      </div>
+      <div class="footer-cta">
+        <a class="btn btn-solid" href={wa} target="_blank" rel="noopener">Escríbenos por WhatsApp</a>
+        <a class="btn btn-ghost" href={BIZ.instagram} target="_blank" rel="noopener">Instagram</a>
+      </div>
+    </div>
+    <div class="wrap footer-legal">
+      <p>© {new Date().getFullYear()} Quisqueya by Piaroa · Hecho a mano en República Dominicana</p>
+    </div>
+  </footer>
+</body>
+</html>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    height: var(--nav-h);
+    background: color-mix(in srgb, var(--papel) 88%, transparent);
+    backdrop-filter: saturate(160%) blur(14px);
+    -webkit-backdrop-filter: saturate(160%) blur(14px);
+    border-bottom: 1px solid var(--linea);
+  }
+  .nav-inner {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .brand { display: flex; flex-direction: column; line-height: 1; }
+  .brand-name {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 26px;
+    color: var(--tinta);
+  }
+  .brand-sub {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .32em;
+    text-transform: uppercase;
+    color: var(--piedra);
+    margin-top: 3px;
+  }
+  .links { display: flex; gap: 30px; }
+  .links a {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--tinta-2);
+    letter-spacing: .02em;
+    transition: color .15s ease;
+  }
+  .links a:hover { color: var(--terracota); }
+  .nav-wa { padding: 10px 20px; font-size: 13.5px; }
+  @media (max-width: 760px) {
+    .links { display: none; }
+  }
+
+  .footer { background: var(--oliva); color: var(--oliva-tinta); margin-top: 40px; }
+  .footer-grid {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding-top: 72px;
+    padding-bottom: 56px;
+  }
+  .footer .eyebrow { color: var(--arena); }
+  .footer-title { font-size: clamp(24px, 3vw, 34px); color: #fff; margin: 10px 0 16px; }
+  .footer-line { color: #cfcdbb; font-size: 15px; }
+  .footer-cta { display: flex; gap: 12px; flex-wrap: wrap; }
+  .footer-legal {
+    border-top: 1px solid rgba(233,231,218,.18);
+    padding-top: 20px;
+    padding-bottom: 26px;
+    font-size: 13px;
+    color: #a9a795;
+  }
+</style>

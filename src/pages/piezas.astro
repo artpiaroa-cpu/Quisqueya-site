@@ -1,0 +1,82 @@
+---
+import Base from '../layouts/Base.astro'
+import ProductCard from '../components/ProductCard.astro'
+import { getCatalog, groupOf } from '../lib/catalog.js'
+
+const { products, usdRate } = await getCatalog()
+const piezas = products.filter(p => groupOf(p) === 'pieza')
+
+// Nombres editoriales de cada tipo
+const TYPE_LABEL = {
+  'Collar Decorado': 'Collares decorativos',
+  'Aplique': 'Apliques de pared',
+  'Lamparas': 'Lámparas',
+  'Cuadro': 'Cuadros',
+  'Borlas': 'Borlas',
+  'Acrilico': 'Acrílicos',
+  'Decoracion Mesa': 'Decoración de mesa',
+  'Jaron Decorado': 'Jarrones decorados',
+  'Polimero': 'Polímero',
+  'Tubos y Totem': 'Tótems',
+  'Muebles': 'Muebles',
+  'Alfombra': 'Alfombras',
+}
+
+const groups = new Map()
+for (const p of piezas) {
+  const key = TYPE_LABEL[p.type] || p.type
+  if (!groups.has(key)) groups.set(key, [])
+  groups.get(key).push(p)
+}
+const ordered = [...groups.entries()].sort((a, b) => b[1].length - a[1].length)
+const slug = (s) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-')
+---
+<Base title="Piezas decorativas — Quisqueya by Piaroa" description="Collares decorativos de pared y mesa, apliques, lámparas, cuadros y esculturas de fibra natural hechas a mano en República Dominicana.">
+  <div class="cat-hero">
+    <div class="wrap">
+      <p class="eyebrow">Piezas decorativas</p>
+      <h1>Esculturas de fibra, madera y nudo</h1>
+      <p class="cat-sub">{piezas.length} piezas únicas — collares para pared o mesa, apliques, lámparas y tótems. No hay dos iguales.</p>
+    </div>
+  </div>
+
+  <section class="cat-body">
+    <div class="wrap">
+      <div class="pills" role="navigation" aria-label="Tipos de pieza">
+        {ordered.map(([name, items]) => (
+          <a class="pill" href={`#${slug(name)}`}>{name} ({items.length})</a>
+        ))}
+      </div>
+
+      {ordered.map(([name, items]) => (
+        <div class="col-group" id={slug(name)}>
+          <h2 class="col-title serif">{name} <span>{items.length}</span></h2>
+          <div class="grid">
+            {items.map(p => <ProductCard p={p} usdRate={usdRate} />)}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .cat-hero {
+    background: var(--marfil);
+    border-bottom: 1px solid var(--linea);
+    padding: 72px 0 56px;
+    text-align: center;
+  }
+  .cat-hero .eyebrow { color: var(--terracota); }
+  .cat-hero h1 { font-size: clamp(32px, 5vw, 52px); margin: 14px 0 14px; }
+  .cat-sub { color: var(--tinta-2); max-width: 54ch; margin: 0 auto; }
+  .cat-body { padding-top: 40px; }
+  .col-group { margin-top: 48px; scroll-margin-top: calc(var(--nav-h) + 20px); }
+  .col-title {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(22px, 3vw, 30px);
+    margin-bottom: 22px;
+  }
+  .col-title span { color: var(--piedra); font-size: .6em; vertical-align: middle; margin-left: 8px; }
+</style>

@@ -1,0 +1,42 @@
+---
+import Base from '../layouts/Base.astro'
+import ProductCard from '../components/ProductCard.astro'
+import { getCatalog, groupOf } from '../lib/catalog.js'
+
+const { products, usdRate } = await getCatalog()
+const velas = products.filter(p => groupOf(p) === 'vela')
+  .sort((a, b) => a.name.localeCompare(b.name, 'es'))
+
+// Fragancia legible: el nombre guarda "Vela 15 oz — Fragancia" o "Vela Fragancia"
+const tam = (p) => p.dimensions || ''
+---
+<Base title="Velas decorativas — Quisqueya by Piaroa" description="Velas artesanales de cera de soya y coco, vertidas a mano en Santo Domingo. Fragancias únicas en recipientes con tapa de corcho y madera.">
+  <div class="cat-hero">
+    <div class="wrap">
+      <p class="eyebrow">Velas decorativas</p>
+      <h1>Cada vela, un lugar</h1>
+      <p class="cat-sub">Cera de soya y coco vertida a mano, recipientes con tapa de corcho natural y {velas.length} fragancias para ambientar tu espacio.</p>
+    </div>
+  </div>
+
+  <section class="cat-body">
+    <div class="wrap">
+      <div class="grid">
+        {velas.map(p => <ProductCard p={p} usdRate={usdRate} />)}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .cat-hero {
+    background: var(--marfil);
+    border-bottom: 1px solid var(--linea);
+    padding: 72px 0 56px;
+    text-align: center;
+  }
+  .cat-hero .eyebrow { color: var(--terracota); }
+  .cat-hero h1 { font-size: clamp(32px, 5vw, 52px); margin: 14px 0 14px; }
+  .cat-sub { color: var(--tinta-2); max-width: 54ch; margin: 0 auto; }
+  .cat-body { padding-top: 56px; }
+</style>

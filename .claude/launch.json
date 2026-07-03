@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "quisqueya-site",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "C:\\Users\\crist\\OneDrive\\Anexos\\Documents\\Quisqueya-site",
+      "port": 4321
+    }
+  ]
+}

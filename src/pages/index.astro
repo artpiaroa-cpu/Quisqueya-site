@@ -1,0 +1,217 @@
+---
+import Base from '../layouts/Base.astro'
+import ProductCard from '../components/ProductCard.astro'
+import { getCatalog, groupOf, waLink } from '../lib/catalog.js'
+
+const { products, usdRate } = await getCatalog()
+
+const velas   = products.filter(p => groupOf(p) === 'vela')
+const cojines = products.filter(p => groupOf(p) === 'cojin')
+const piezas  = products.filter(p => groupOf(p) === 'pieza')
+
+// Imagen de hero y tiles: salas reales ("en sala") del catálogo.
+const salaDe = (list) => list.find(p => p.web_image_url_2)?.web_image_url_2 || list[0]?.web_image_url
+const heroImg = salaDe(piezas.filter(p => p.type === 'Lamparas')) || salaDe(piezas)
+const tileVela  = velas[0]?.web_image_url
+const tileCojin = salaDe(cojines)
+const tilePieza = salaDe(piezas.filter(p => p.type === 'Collar Decorado'))
+
+// Destacados: los más recientes del showroom con segunda foto (los más fotogénicos).
+const destacados = [...products]
+  .sort((a, b) => new Date(b.quisqueya_added_at || b.created_at) - new Date(a.quisqueya_added_at || a.created_at))
+  .filter(p => p.web_image_url)
+  .slice(0, 8)
+
+const wa = waLink()
+---
+<Base>
+  <!-- HERO -->
+  <div class="hero">
+    <img class="hero-img" src={heroImg} alt="Pieza artesanal de Quisqueya by Piaroa en un interior" />
+    <div class="hero-veil"></div>
+    <div class="wrap hero-content">
+      <p class="eyebrow">Hecho a mano en República Dominicana</p>
+      <h1>Piezas que definen espacios</h1>
+      <p class="hero-sub">Fibra natural, madera y fuego — anudadas a mano en nuestro taller de Santo Domingo. Cada pieza es única y está en el showroom, lista para tu espacio.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-solid" href="/piezas">Ver el catálogo</a>
+        <a class="btn btn-ghost" href={wa} target="_blank" rel="noopener">Escríbenos</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRES PUERTAS -->
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">El showroom, en línea</p>
+        <h2>Tres universos, una misma mano</h2>
+        <p>Todo lo que ves aquí está físicamente en el showroom ahora mismo. Cuando una pieza se va, sale del catálogo.</p>
+      </div>
+      <div class="doors">
+        <a class="door" href="/velas">
+          <img src={tileVela} alt="" loading="lazy" />
+          <div class="door-veil"></div>
+          <div class="door-label">
+            <h3 class="serif">Velas</h3>
+            <p>{velas.length} fragancias · soya y coco</p>
+          </div>
+        </a>
+        <a class="door" href="/cojines">
+          <img src={tileCojin} alt="" loading="lazy" />
+          <div class="door-veil"></div>
+          <div class="door-label">
+            <h3 class="serif">Cojines</h3>
+            <p>{cojines.length} diseños tejidos a mano</p>
+          </div>
+        </a>
+        <a class="door" href="/piezas">
+          <img src={tilePieza} alt="" loading="lazy" />
+          <div class="door-veil"></div>
+          <div class="door-label">
+            <h3 class="serif">Piezas</h3>
+            <p>{piezas.length} collares, apliques, lámparas…</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- DESTACADOS -->
+  <section class="destacados">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">Recién llegadas</p>
+        <h2>Lo nuevo en el showroom</h2>
+      </div>
+      <div class="grid">
+        {destacados.map(p => <ProductCard p={p} usdRate={usdRate} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- FRANJA TALLER (breve) -->
+  <section class="taller">
+    <div class="wrap taller-grid">
+      <div class="taller-text">
+        <p class="eyebrow">El taller</p>
+        <h2>Diferente, artesanal y exclusivo</h2>
+        <p>Detrás de cada pieza hay horas de fibra anudada a mano en nuestro taller de Santo Domingo. No hay dos iguales — y esa es la idea.</p>
+        <a class="taller-link" href={wa} target="_blank" rel="noopener">Conversemos sobre tu espacio →</a>
+      </div>
+      <div class="taller-photo">
+        <img src={salaDe(piezas.filter(p => p.type === 'Aplique')) || heroImg} alt="Pieza de fibra anudada a mano en un interior" loading="lazy" />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* hero */
+  .hero {
+    position: relative;
+    min-height: calc(100svh - var(--nav-h));
+    display: flex;
+    align-items: flex-end;
+  }
+  .hero-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero-veil {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(20,16,10,.72) 0%, rgba(20,16,10,.25) 45%, rgba(20,16,10,.08) 100%);
+  }
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    color: #fff;
+    padding-bottom: 88px;
+    max-width: var(--max-w);
+    width: 100%;
+  }
+  .hero-content .eyebrow { color: #e8d9c8; }
+  .hero-content h1 {
+    font-size: clamp(38px, 6vw, 68px);
+    margin: 16px 0 18px;
+    max-width: 15ch;
+  }
+  .hero-sub { max-width: 52ch; font-size: 17px; color: #efe9de; }
+  .hero-ctas { display: flex; gap: 14px; margin-top: 30px; flex-wrap: wrap; }
+  .hero-ctas .btn-ghost { color: #fff; }
+
+  /* tres puertas */
+  .doors {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  @media (max-width: 760px) { .doors { grid-template-columns: 1fr; } }
+  .door {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    border-radius: var(--radius);
+    overflow: hidden;
+    display: block;
+  }
+  .door img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .5s ease;
+  }
+  .door:hover img { transform: scale(1.04); }
+  .door-veil {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(20,16,10,.62), rgba(20,16,10,.02) 55%);
+  }
+  .door-label {
+    position: absolute;
+    left: 24px;
+    right: 24px;
+    bottom: 22px;
+    color: #fff;
+    z-index: 2;
+  }
+  .door-label h3 { font-size: 32px; font-weight: 500; }
+  .door-label p { font-size: 13.5px; color: #e6ddd0; margin-top: 4px; }
+
+  /* destacados sobre marfil para ritmo de bloques */
+  .destacados { background: var(--marfil); border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea); }
+
+  /* taller */
+  .taller-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: center;
+  }
+  @media (max-width: 860px) { .taller-grid { grid-template-columns: 1fr; gap: 32px; } }
+  .taller-text .eyebrow { color: var(--terracota); }
+  .taller-text h2 { font-size: clamp(26px, 3.5vw, 38px); margin: 12px 0 16px; }
+  .taller-text p { color: var(--tinta-2); max-width: 46ch; }
+  .taller-link {
+    display: inline-block;
+    margin-top: 22px;
+    font-weight: 800;
+    font-size: 15px;
+    color: var(--terracota);
+    border-bottom: 2px solid color-mix(in srgb, var(--terracota) 35%, transparent);
+    padding-bottom: 2px;
+  }
+  .taller-link:hover { border-bottom-color: var(--terracota); }
+  .taller-photo img {
+    border-radius: var(--radius);
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    width: 100%;
+    box-shadow: var(--card-shadow);
+  }
+</style>

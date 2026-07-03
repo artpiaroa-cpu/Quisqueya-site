@@ -1,0 +1,133 @@
+/* ──────────────────────────────────────────────────────────────────────
+   Quisqueya by Piaroa — sistema de diseño
+   Receta: base Claude (pergamino/terracota/neutros cálidos, serif 500),
+   catálogo Airbnb (cards foto-primero), ritmo Apple (1 sección = 1 mensaje),
+   labels uppercase Ferrari. Un solo acento por pantalla: terracota.
+   ────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* color */
+  --papel:      #f6f3ec;   /* fondo pergamino */
+  --marfil:     #fdfcf8;   /* cards / superficies */
+  --tinta:      #1b1712;   /* texto principal (negro cálido) */
+  --tinta-2:    #5e574c;   /* texto secundario */
+  --piedra:     #8d8577;   /* texto terciario / labels */
+  --terracota:  #8a4c2a;   /* ÚNICO acento */
+  --terracota-2:#a6643e;
+  --oliva:      #454f39;   /* secciones oscuras */
+  --oliva-tinta:#e9e7da;   /* texto sobre oliva */
+  --arena:      #ece5d6;   /* superficies secundarias */
+  --linea:      #e4dbc8;
+
+  /* tipografía */
+  --serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --sans:  'Manrope', 'Segoe UI', -apple-system, sans-serif;
+
+  --nav-h: 72px;
+  --radius: 14px;
+  --max-w: 1200px;
+
+  /* sombra 3 capas (Airbnb) calibrada a fondo pergamino */
+  --card-shadow: rgba(27,23,18,.03) 0 0 0 1px, rgba(27,23,18,.04) 0 2px 6px, rgba(27,23,18,.08) 0 4px 10px;
+  --card-shadow-hover: rgba(27,23,18,.05) 0 0 0 1px, rgba(27,23,18,.10) 0 6px 16px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  background: var(--papel);
+  color: var(--tinta);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+.wrap { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
+
+/* tipografía editorial */
+h1, h2, h3.serif {
+  font-family: var(--serif);
+  font-weight: 500;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.eyebrow {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+/* CTAs píldora (par: sólido + fantasma) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--sans);
+  font-size: 14.5px;
+  font-weight: 700;
+  padding: 13px 26px;
+  border-radius: 999px;
+  transition: transform .15s ease, background .2s ease, box-shadow .2s ease;
+}
+.btn:active { transform: scale(.96); }
+.btn-solid { background: var(--terracota); color: #fff; }
+.btn-solid:hover { background: var(--terracota-2); }
+.btn-ghost { border: 1.5px solid currentColor; }
+.btn-ghost:hover { background: rgba(255,255,255,.12); }
+
+/* secciones como capítulos */
+section { padding: 96px 0; }
+@media (max-width: 640px) { section { padding: 64px 0; } }
+
+.sec-head { text-align: center; margin-bottom: 48px; }
+.sec-head .eyebrow { color: var(--terracota); }
+.sec-head h2 { font-size: clamp(28px, 4vw, 42px); margin-top: 12px; }
+.sec-head p { color: var(--tinta-2); max-width: 56ch; margin: 14px auto 0; }
+
+/* grid de producto (Airbnb 4→3→2) */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+}
+@media (max-width: 1024px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 760px)  { .grid { grid-template-columns: repeat(2, 1fr); gap: 14px; } }
+
+/* píldoras de categoría con scroll horizontal */
+.pills {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 4px 2px 14px;
+  scrollbar-width: none;
+}
+.pills::-webkit-scrollbar { display: none; }
+.pill {
+  flex: 0 0 auto;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 9px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--linea);
+  background: var(--marfil);
+  color: var(--tinta-2);
+  white-space: nowrap;
+  transition: all .15s ease;
+}
+.pill:hover, .pill.active { background: var(--tinta); color: var(--papel); border-color: var(--tinta); }
+
+/* accesibilidad */
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--terracota);
+  outline-offset: 3px;
+  border-radius: 4px;
+}

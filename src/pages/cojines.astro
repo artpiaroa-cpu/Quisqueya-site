@@ -1,0 +1,67 @@
+---
+import Base from '../layouts/Base.astro'
+import ProductCard from '../components/ProductCard.astro'
+import { getCatalog, groupOf, cleanCollection } from '../lib/catalog.js'
+
+const { products, usdRate } = await getCatalog()
+const cojines = products.filter(p => groupOf(p) === 'cojin')
+
+// Agrupa por colección normalizada; sin colección al final.
+const groups = new Map()
+for (const p of cojines) {
+  const key = cleanCollection(p.collection) || 'Otros diseños'
+  if (!groups.has(key)) groups.set(key, [])
+  groups.get(key).push(p)
+}
+const ordered = [...groups.entries()].sort((a, b) => b[1].length - a[1].length)
+const slug = (s) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-')
+---
+<Base title="Cojines decorativos — Quisqueya by Piaroa" description="Cojines tejidos a mano en República Dominicana. Colecciones Esencial, New Horizon y Estudio Elemental — textura y calidez para tu sofá.">
+  <div class="cat-hero">
+    <div class="wrap">
+      <p class="eyebrow">Cojines decorativos</p>
+      <h1>Textura que se siente</h1>
+      <p class="cat-sub">{cojines.length} diseños tejidos a mano, organizados por colección. Flecos, trenzas y cuadros de color que visten cualquier sofá.</p>
+    </div>
+  </div>
+
+  <section class="cat-body">
+    <div class="wrap">
+      <div class="pills" role="navigation" aria-label="Colecciones">
+        {ordered.map(([name, items]) => (
+          <a class="pill" href={`#${slug(name)}`}>{name} ({items.length})</a>
+        ))}
+      </div>
+
+      {ordered.map(([name, items]) => (
+        <div class="col-group" id={slug(name)}>
+          <h2 class="col-title serif">{name} <span>{items.length}</span></h2>
+          <div class="grid">
+            {items.map(p => <ProductCard p={p} usdRate={usdRate} />)}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .cat-hero {
+    background: var(--marfil);
+    border-bottom: 1px solid var(--linea);
+    padding: 72px 0 56px;
+    text-align: center;
+  }
+  .cat-hero .eyebrow { color: var(--terracota); }
+  .cat-hero h1 { font-size: clamp(32px, 5vw, 52px); margin: 14px 0 14px; }
+  .cat-sub { color: var(--tinta-2); max-width: 54ch; margin: 0 auto; }
+  .cat-body { padding-top: 40px; }
+  .col-group { margin-top: 48px; scroll-margin-top: calc(var(--nav-h) + 20px); }
+  .col-title {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(22px, 3vw, 30px);
+    margin-bottom: 22px;
+  }
+  .col-title span { color: var(--piedra); font-size: .6em; vertical-align: middle; margin-left: 8px; }
+</style>

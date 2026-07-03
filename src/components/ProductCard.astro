@@ -1,0 +1,82 @@
+---
+import { fmtRD, fmtUSD, waProductLink, cleanCollection, displayName } from '../lib/catalog.js'
+
+const { p, usdRate } = Astro.props
+const wa = waProductLink(p, usdRate)
+const col = cleanCollection(p.collection)
+const name = displayName(p)
+const lastOne = Number(p.stock_quisqueya) === 1
+---
+<article class="card">
+  <a class="photo" href={wa} target="_blank" rel="noopener" aria-label={`Consultar ${name} por WhatsApp`}>
+    <img src={p.web_image_url} alt={name} loading="lazy" />
+    {p.web_image_url_2 && <img class="alt" src={p.web_image_url_2} alt="" loading="lazy" aria-hidden="true" />}
+    {lastOne && <span class="badge">Última pieza</span>}
+  </a>
+  <div class="info">
+    <p class="type">{col ? `${p.type} · ${col}` : p.type}</p>
+    <h3 class="name">{name}</h3>
+    <p class="price">
+      <strong>{fmtRD(p.price_sale)}</strong>
+      <span>{fmtUSD(p.price_sale, usdRate)}</span>
+      {p.dimensions && <span class="dim">· {p.dimensions}</span>}
+    </p>
+  </div>
+</article>
+
+<style>
+  .card { display: flex; flex-direction: column; }
+  .photo {
+    position: relative;
+    display: block;
+    aspect-ratio: 3 / 4;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--arena);
+    box-shadow: var(--card-shadow);
+    transition: box-shadow .2s ease;
+  }
+  .photo:hover { box-shadow: var(--card-shadow-hover); }
+  .photo img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity .35s ease;
+  }
+  .photo .alt { opacity: 0; }
+  .photo:hover .alt { opacity: 1; }
+  .badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 2;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    background: var(--marfil);
+    color: var(--tinta);
+    padding: 6px 12px;
+    border-radius: 999px;
+  }
+  .info { padding: 12px 4px 0; }
+  .type {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--piedra);
+  }
+  .name {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 16.5px;
+    line-height: 1.35;
+    margin: 4px 0 6px;
+  }
+  .price { font-size: 14px; color: var(--tinta-2); display: flex; gap: 8px; flex-wrap: wrap; }
+  .price strong { color: var(--tinta); font-weight: 800; }
+  .dim { color: var(--piedra); }
+</style>
