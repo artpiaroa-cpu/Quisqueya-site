@@ -22,6 +22,16 @@ const destacados = [...products]
   .filter(p => p.web_image_url)
   .slice(0, 8)
 
+// "Las más deseadas" (patrón Angela Maria): curadas por código vía DESEADAS;
+// si la lista está vacía, usa las piezas statement (mayor precio con foto en sala).
+const DESEADAS = [] // ej: ['CD-177', 'L-24', 'AP-102', 'B-19'] — editar para curar a mano
+const deseadas = DESEADAS.length
+  ? DESEADAS.map(c => products.find(p => p.code === c)).filter(Boolean)
+  : [...piezas]
+      .filter(p => p.web_image_url && p.web_image_url_2)
+      .sort((a, b) => Number(b.price_sale) - Number(a.price_sale))
+      .slice(0, 4)
+
 const wa = waLink()
 ---
 <Base>
@@ -40,8 +50,21 @@ const wa = waLink()
     </div>
   </div>
 
+  <!-- LAS MÁS DESEADAS (patrón Angela Maria) -->
+  <section class="deseadas">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">Selección de la casa</p>
+        <h2>Las más deseadas</h2>
+      </div>
+      <div class="grid deseadas-grid">
+        {deseadas.map(p => <ProductCard p={p} usdRate={usdRate} />)}
+      </div>
+    </div>
+  </section>
+
   <!-- TRES PUERTAS -->
-  <section>
+  <section class="doors-sec">
     <div class="wrap">
       <div class="sec-head">
         <p class="eyebrow">El showroom, en línea</p>
@@ -182,6 +205,10 @@ const wa = waLink()
   }
   .door-label h3 { font-size: 32px; font-weight: 500; }
   .door-label p { font-size: 13.5px; color: #e6ddd0; margin-top: 4px; }
+
+  /* las más deseadas: primera fila de producto, fondo marfil (ritmo de bloques) */
+  .deseadas { background: var(--marfil); border-bottom: 1px solid var(--linea); }
+  .deseadas-grid { max-width: 1080px; margin: 0 auto; }
 
   /* destacados sobre marfil para ritmo de bloques */
   .destacados { background: var(--marfil); border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea); }

@@ -54,10 +54,18 @@ export async function getCatalog() {
 // los nombres que vienen EN MAYÚSCULAS desde el inventario.
 export function displayName(p) {
   let n = (p.name || '').trim()
-  if (p.code) n = n.replace(new RegExp(`\\s*${p.code}\\s*$`, 'i'), '')
-  n = n.replace(/\s*\b[A-Z]{1,3}-\d+\b\s*$/, '').trim()
+  // quita el código al final, con o sin guion ("CD-177" o "C 239")
+  if (p.code) {
+    const c = p.code.replace(/[-\s]/, '[-\\s]?')
+    n = n.replace(new RegExp(`\\s*${c}\\s*$`, 'i'), '')
+  }
+  n = n.replace(/\s+[A-Z]{1,3}[-\s]?\d+\s*$/, '').trim()
+  // quita la medida al final del nombre (ya se muestra aparte): 54"x68", 100x160…
+  n = n.replace(/\s*\d+\s*["”']?\s*[xX×]\s*\d+\s*["”']?\s*$/, '').trim()
+  // si viene mayormente EN MAYÚSCULAS (tolera la "x" de las medidas), pásalo a título
   const letters = n.replace(/[^\p{L}]/gu, '')
-  if (letters && letters === letters.toUpperCase()) {
+  const upper = (letters.match(/\p{Lu}/gu) || []).length
+  if (letters.length && upper / letters.length > 0.8) {
     n = n.toLowerCase().replace(/(^|[\s(“"'])(\p{L})/gu, (m, a, b) => a + b.toUpperCase())
   }
   return n
@@ -69,7 +77,7 @@ export function fmtRD(n) {
 
 export function fmtUSD(priceSale, usdRate) {
   const v = Math.round(Number(priceSale || 0) / (usdRate || 60))
-  return v > 0 ? `US$${v}` : ''
+  return v > 0 ? `US$${v.toLocaleString('en-US')}` : ''
 }
 
 // ── Contacto (WhatsApp Business del showroom)

@@ -27,14 +27,24 @@ const wa = waLink()
         <span class="brand-name">Quisqueya</span>
         <span class="brand-sub">by Piaroa</span>
       </a>
-      <nav class="links" aria-label="Categorías">
-        <a href="/velas">Velas</a>
-        <a href="/cojines">Cojines</a>
-        <a href="/piezas">Piezas</a>
+      <nav class="links" aria-label="Secciones">
         <a href="/#showroom">Showroom</a>
       </nav>
       <a class="btn btn-solid nav-wa" href={wa} target="_blank" rel="noopener">WhatsApp</a>
     </div>
+    <nav class="catbar" aria-label="Categorías">
+      <div class="wrap catbar-inner">
+        <a href="/velas">Velas</a>
+        <a href="/cojines">Cojines</a>
+        <a href="/piezas#collares-decorativos">Collares decorativos</a>
+        <a href="/piezas#apliques-de-pared">Apliques</a>
+        <a href="/piezas#lamparas">Lámparas</a>
+        <a href="/piezas#cuadros">Cuadros</a>
+        <a href="/piezas#borlas">Borlas</a>
+        <a href="/piezas#muebles">Muebles</a>
+        <a href="/piezas" class="catbar-all">Todo el catálogo</a>
+      </div>
+    </nav>
   </header>
 
   <main>
@@ -67,19 +77,42 @@ const wa = waLink()
     position: sticky;
     top: 0;
     z-index: 50;
-    height: var(--nav-h);
-    background: color-mix(in srgb, var(--papel) 88%, transparent);
+    background: color-mix(in srgb, var(--papel) 90%, transparent);
     backdrop-filter: saturate(160%) blur(14px);
     -webkit-backdrop-filter: saturate(160%) blur(14px);
     border-bottom: 1px solid var(--linea);
   }
   .nav-inner {
-    height: 100%;
+    height: var(--nav-h);
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 20px;
   }
+  /* barra de categorías (patrón Angela Maria) */
+  .catbar { border-top: 1px solid var(--linea); }
+  .catbar-inner {
+    display: flex;
+    justify-content: safe center;
+    gap: 30px;
+    overflow-x: auto;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    scrollbar-width: none;
+  }
+  .catbar-inner::-webkit-scrollbar { display: none; }
+  .catbar a {
+    flex: 0 0 auto;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--tinta-2);
+    transition: color .15s ease;
+    white-space: nowrap;
+  }
+  .catbar a:hover { color: var(--terracota); }
+  .catbar-all { color: var(--terracota) !important; }
   .brand { display: flex; flex-direction: column; line-height: 1; }
   .brand-name {
     font-family: var(--serif);
