@@ -17,8 +17,10 @@ const ordered = [...groups.entries()].sort((a, b) => b[1].length - a[1].length)
 const slug = (s) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-')
 ---
 <Base title="Cojines decorativos — Quisqueya by Piaroa" description="Cojines tejidos a mano en República Dominicana. Colecciones Esencial, New Horizon y Estudio Elemental — textura y calidez para tu sofá.">
-  <div class="cat-hero">
-    <div class="wrap">
+  <div class="phero">
+    <img class="phero-img" src="https://kyexrnwpybkdemlesfzf.supabase.co/storage/v1/object/public/web-images/site/cojines-hero.jpg" alt="Cojines tejidos a mano de Quisqueya by Piaroa sobre un sofá de lino" />
+    <div class="phero-veil"></div>
+    <div class="wrap phero-content">
       <p class="eyebrow">Cojines decorativos</p>
       <h1>Textura que se siente</h1>
       <p class="cat-sub">{cojines.length} diseños tejidos a mano, organizados por colección. Flecos, trenzas y cuadros de color que visten cualquier sofá.</p>
@@ -46,15 +48,27 @@ const slug = (s) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').rep
 </Base>
 
 <style>
-  .cat-hero {
-    background: var(--marfil);
-    border-bottom: 1px solid var(--linea);
-    padding: 72px 0 56px;
-    text-align: center;
+  .phero {
+    position: relative;
+    min-height: 64svh;
+    display: flex;
+    align-items: center;
   }
-  .cat-hero .eyebrow { color: var(--terracota); }
-  .cat-hero h1 { font-size: clamp(32px, 5vw, 52px); margin: 14px 0 14px; }
-  .cat-sub { color: var(--tinta-2); max-width: 54ch; margin: 0 auto; }
+  .phero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 72% center; }
+  .phero-veil {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(43,32,20,.52) 0%, rgba(43,32,20,.22) 42%, rgba(43,32,20,0) 70%);
+  }
+  .phero-content { position: relative; z-index: 2; color: #fff; width: 100%; }
+  .phero-content .eyebrow { color: #ecdcc5; }
+  .phero-content h1 { font-size: clamp(32px, 5vw, 52px); margin: 14px 0 14px; max-width: 16ch; }
+  .cat-sub { color: #f1e9dc; max-width: 44ch; }
+  @media (max-width: 640px) {
+    .phero { min-height: 72svh; align-items: flex-end; }
+    .phero-content { padding-bottom: 40px; }
+    .phero-veil { background: linear-gradient(to top, rgba(43,32,20,.68), rgba(43,32,20,.06) 60%); }
+  }
   .cat-body { padding-top: 40px; }
   .col-group { margin-top: 48px; scroll-margin-top: calc(var(--nav-h) + 20px); }
   .col-title {
