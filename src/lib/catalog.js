@@ -27,9 +27,12 @@ export async function getUsdRate() {
   }
 }
 
-// Grupo de navegación de un producto: vela | cojin | pieza
+// Grupo de navegación de un producto: aroma | cojin | pieza
+// El área de aromas (/velas) reúne velas, difusores y room sprays,
+// SEPARADOS por tipo dentro de la página (pedido 03-jul).
+export const AROMA_TYPES = ['Vela', 'Difusores', 'Room Spray']
 export function groupOf(p) {
-  if (p.type === 'Vela') return 'vela'
+  if (AROMA_TYPES.includes(p.type)) return 'aroma'
   if (/cojin/i.test(p.type)) return 'cojin'
   return 'pieza'
 }

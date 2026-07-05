@@ -1,42 +1,123 @@
 ---
 import Base from '../layouts/Base.astro'
 import ProductCard from '../components/ProductCard.astro'
-import { getCatalog, groupOf } from '../lib/catalog.js'
+import { getCatalog, groupOf, waLink, BIZ } from '../lib/catalog.js'
 
 const { products, usdRate } = await getCatalog()
-const velas = products.filter(p => groupOf(p) === 'vela')
-  .sort((a, b) => a.name.localeCompare(b.name, 'es'))
+const aromas = products.filter(p => groupOf(p) === 'aroma')
 
-// Fragancia legible: el nombre guarda "Vela 15 oz — Fragancia" o "Vela Fragancia"
-const tam = (p) => p.dimensions || ''
+const velas = aromas.filter(p => p.type === 'Vela').sort((a, b) => a.name.localeCompare(b.name, 'es'))
+const difusores = aromas.filter(p => p.type === 'Difusores').sort((a, b) => a.name.localeCompare(b.name, 'es'))
+const sprays = aromas.filter(p => p.type === 'Room Spray').sort((a, b) => a.name.localeCompare(b.name, 'es'))
+
+const HERO_IMG = 'https://kyexrnwpybkdemlesfzf.supabase.co/storage/v1/object/public/web-images/site/velas-hero.jpg'
+const wa = waLink('Hola, vengo de la página de velas de Quisqueya by Piaroa. Quiero información sobre las fragancias.')
+
+const secciones = [
+  { id: 'velas', titulo: 'Velas', sub: 'Cera de soya y coco, vertida a mano. Tapa de corcho natural.', items: velas },
+  { id: 'difusores', titulo: 'Difusores', sub: 'Aroma constante para tu espacio, sin fuego.', items: difusores },
+  { id: 'sprays', titulo: 'Room sprays', sub: 'Fragancia instantánea, donde la necesites.', items: sprays },
+].filter(s => s.items.length > 0)
 ---
-<Base title="Velas decorativas — Quisqueya by Piaroa" description="Velas artesanales de cera de soya y coco, vertidas a mano en Santo Domingo. Fragancias únicas en recipientes con tapa de corcho y madera.">
-  <div class="cat-hero">
-    <div class="wrap">
-      <p class="eyebrow">Velas decorativas</p>
-      <h1>Cada vela, un lugar</h1>
-      <p class="cat-sub">Cera de soya y coco vertida a mano, recipientes con tapa de corcho natural y {velas.length} fragancias para ambientar tu espacio.</p>
+<Base
+  title="Velas Quisqueya — velas artesanales, difusores y room sprays"
+  description={`Velas artesanales de cera de soya y coco vertidas a mano en Santo Domingo, difusores y room sprays. ${velas.length} fragancias en el showroom de ${BIZ.name}.`}
+>
+  <!-- HERO de la línea de aromas (link directo del Instagram de velas) -->
+  <div class="vhero">
+    <img class="vhero-img" src={HERO_IMG} alt="Vela artesanal Quisqueya encendida sobre una mesa de madera" />
+    <div class="vhero-veil"></div>
+    <div class="wrap vhero-content">
+      <p class="eyebrow">Velas · Difusores · Room sprays</p>
+      <h1>El aroma de Quisqueya</h1>
+      <p class="vhero-sub">Cera de soya y coco vertida a mano en Santo Domingo. {velas.length} fragancias que convierten cualquier rincón en un ritual.</p>
+      <div class="vhero-ctas">
+        <a class="btn btn-solid" href="#velas">Ver las fragancias</a>
+        <a class="btn btn-ghost" href={wa} target="_blank" rel="noopener">Escríbenos</a>
+      </div>
     </div>
   </div>
 
-  <section class="cat-body">
-    <div class="wrap">
-      <div class="grid">
-        {velas.map(p => <ProductCard p={p} usdRate={usdRate} />)}
+  <!-- Intro editorial breve -->
+  <section class="vintro">
+    <div class="wrap vintro-grid">
+      <div class="vintro-item">
+        <h3 class="serif">Vertidas a mano</h3>
+        <p>Cada vela se vierte una a una en nuestro taller, con cera natural de soya y coco que quema limpio y por más horas.</p>
       </div>
+      <div class="vintro-item">
+        <h3 class="serif">Fragancias con alma</h3>
+        <p>Agua de Coco, Ahumado Quisqueya, Aura Dorada… cada fragancia evoca un momento de la isla.</p>
+      </div>
+      <div class="vintro-item">
+        <h3 class="serif">En el showroom</h3>
+        <p>Todo lo que ves está disponible ahora mismo. Ven a olerlas o pide la tuya por WhatsApp.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Catálogo por tipo (velas / difusores / sprays SEPARADOS) -->
+  <section class="vcat">
+    <div class="wrap">
+      <div class="pills" role="navigation" aria-label="Tipos de aroma">
+        {secciones.map(s => <a class="pill" href={`#${s.id}`}>{s.titulo} ({s.items.length})</a>)}
+      </div>
+
+      {secciones.map(s => (
+        <div class="col-group" id={s.id}>
+          <div class="group-head">
+            <h2 class="col-title serif">{s.titulo} <span>{s.items.length}</span></h2>
+            <p class="group-sub">{s.sub}</p>
+          </div>
+          <div class="grid">
+            {s.items.map(p => <ProductCard p={p} usdRate={usdRate} />)}
+          </div>
+        </div>
+      ))}
     </div>
   </section>
 </Base>
 
 <style>
-  .cat-hero {
-    background: var(--marfil);
-    border-bottom: 1px solid var(--linea);
-    padding: 72px 0 56px;
+  .vhero {
+    position: relative;
+    min-height: 78svh;
+    display: flex;
+    align-items: center;
+  }
+  .vhero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 70% center; }
+  .vhero-veil {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(43,32,20,.55) 0%, rgba(43,32,20,.25) 42%, rgba(43,32,20,0) 70%);
+  }
+  .vhero-content { position: relative; z-index: 2; color: #fff; width: 100%; }
+  .vhero-content .eyebrow { color: #ecdcc5; }
+  .vhero-content h1 { font-size: clamp(36px, 5.5vw, 62px); margin: 14px 0 16px; max-width: 14ch; }
+  .vhero-sub { max-width: 44ch; font-size: 17px; color: #f1e9dc; }
+  .vhero-ctas { display: flex; gap: 14px; margin-top: 28px; flex-wrap: wrap; }
+  .vhero-ctas .btn-ghost { color: #fff; }
+  @media (max-width: 640px) {
+    .vhero { min-height: 88svh; align-items: flex-end; }
+    .vhero-content { padding-bottom: 48px; }
+    .vhero-veil { background: linear-gradient(to top, rgba(43,32,20,.7), rgba(43,32,20,.08) 60%); }
+  }
+
+  .vintro { background: var(--marfil); border-bottom: 1px solid var(--linea); padding: 64px 0; }
+  .vintro-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
     text-align: center;
   }
-  .cat-hero .eyebrow { color: var(--terracota); }
-  .cat-hero h1 { font-size: clamp(32px, 5vw, 52px); margin: 14px 0 14px; }
-  .cat-sub { color: var(--tinta-2); max-width: 54ch; margin: 0 auto; }
-  .cat-body { padding-top: 56px; }
+  @media (max-width: 760px) { .vintro-grid { grid-template-columns: 1fr; gap: 28px; } }
+  .vintro-item h3 { font-size: 21px; font-weight: 500; margin-bottom: 8px; color: var(--terracota); }
+  .vintro-item p { font-size: 15px; color: var(--tinta-2); max-width: 34ch; margin: 0 auto; }
+
+  .vcat { padding-top: 48px; }
+  .col-group { margin-top: 48px; scroll-margin-top: calc(var(--nav-h) + 70px); }
+  .group-head { text-align: center; margin-bottom: 26px; }
+  .col-title { font-weight: 500; font-size: clamp(24px, 3vw, 32px); }
+  .col-title span { color: var(--piedra); font-size: .6em; vertical-align: middle; margin-left: 8px; }
+  .group-sub { color: var(--tinta-2); font-size: 15px; margin-top: 6px; }
 </style>

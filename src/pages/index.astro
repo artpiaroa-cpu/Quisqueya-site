@@ -5,7 +5,8 @@ import { getCatalog, groupOf, waLink } from '../lib/catalog.js'
 
 const { products, usdRate } = await getCatalog()
 
-const velas   = products.filter(p => groupOf(p) === 'vela')
+const aromas  = products.filter(p => groupOf(p) === 'aroma')
+const velas   = aromas.filter(p => p.type === 'Vela')
 const cojines = products.filter(p => groupOf(p) === 'cojin')
 const piezas  = products.filter(p => groupOf(p) === 'pieza')
 
@@ -77,7 +78,7 @@ const wa = waLink()
           <div class="door-veil"></div>
           <div class="door-label">
             <h3 class="serif">Velas</h3>
-            <p>{velas.length} fragancias · soya y coco</p>
+            <p>{velas.length} fragancias · difusores y sprays</p>
           </div>
         </a>
         <a class="door" href="/cojines">
