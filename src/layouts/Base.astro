@@ -2,8 +2,39 @@
 import '../styles/global.css'
 import { BIZ, waLink } from '../lib/catalog.js'
 
-const { title = 'Quisqueya by Piaroa — Piezas que definen espacios', description = 'Piezas decorativas, cojines y velas hechas a mano en República Dominicana. Visita nuestro showroom en Santo Domingo o escríbenos por WhatsApp.' } = Astro.props
+const {
+  title = 'Quisqueya by Piaroa — Piezas que definen espacios',
+  description = 'Piezas decorativas, cojines y velas hechas a mano en República Dominicana. Visita nuestro showroom en Santo Domingo o escríbenos por WhatsApp.',
+  image = 'https://kyexrnwpybkdemlesfzf.supabase.co/storage/v1/object/public/web-images/site/cojines-hero.jpg',
+  jsonLd = null,
+} = Astro.props
 const wa = waLink()
+const canonical = new URL(Astro.url.pathname, Astro.site).href
+
+// JSON-LD del negocio (showroom físico → SEO local). Las páginas pueden
+// añadir su propio bloque (ej. Product) vía la prop jsonLd.
+const storeLd = {
+  '@context': 'https://schema.org',
+  '@type': 'HomeGoodsStore',
+  name: BIZ.name,
+  url: Astro.site?.href || 'https://quisqueya-web.netlify.app',
+  image,
+  telephone: '+1-809-808-3008',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'C. Max Henríquez Ureña 104, Plaza Cordelia, Los Prados',
+    addressLocality: 'Santo Domingo',
+    addressCountry: 'DO',
+  },
+  openingHoursSpecification: {
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    opens: '09:00',
+    closes: '18:00',
+  },
+  sameAs: [BIZ.instagram],
+  priceRange: '$$',
+}
 ---
 <!doctype html>
 <html lang="es">
@@ -12,13 +43,25 @@ const wa = waLink()
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{title}</title>
   <meta name="description" content={description} />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href={canonical} />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={canonical} />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
-  <meta property="og:type" content="website" />
+  <meta property="og:image" content={image} />
+  <meta property="og:locale" content="es_DO" />
+  <meta property="og:site_name" content="Quisqueya by Piaroa" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={image} />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪢</text></svg>" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <script type="application/ld+json" set:html={JSON.stringify(storeLd)} />
+  {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
 </head>
 <body>
   <header class="nav">

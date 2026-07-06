@@ -1,21 +1,21 @@
 ---
-import { fmtRD, fmtUSD, waProductLink, cleanCollection, displayName } from '../lib/catalog.js'
+import { fmtRD, fmtUSD, cleanCollection, displayName, codeSlug } from '../lib/catalog.js'
 
 const { p, usdRate } = Astro.props
-const wa = waProductLink(p, usdRate)
+const href = `/p/${codeSlug(p)}`
 const col = cleanCollection(p.collection)
 const name = displayName(p)
 const lastOne = Number(p.stock_quisqueya) === 1
 ---
 <article class="card">
-  <a class="photo" href={wa} target="_blank" rel="noopener" aria-label={`Consultar ${name} por WhatsApp`}>
+  <a class="photo" href={href} aria-label={`Ver ${name}`}>
     <img src={p.web_image_url} alt={name} loading="lazy" />
     {p.web_image_url_2 && <img class="alt" src={p.web_image_url_2} alt="" loading="lazy" aria-hidden="true" />}
     {lastOne && <span class="badge">Última pieza</span>}
   </a>
   <div class="info">
     <p class="type">{col ? `${p.type} · ${col}` : p.type}</p>
-    <h3 class="name">{name}</h3>
+    <h3 class="name"><a href={href}>{name}</a></h3>
     <p class="price">
       <strong>{fmtRD(p.price_sale)}</strong>
       <span>{fmtUSD(p.price_sale, usdRate)}</span>

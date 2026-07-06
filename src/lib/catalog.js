@@ -46,11 +46,18 @@ export function cleanCollection(c) {
 }
 
 export async function getCatalog() {
-  const [products, usdRate] = await Promise.all([
+  const [rows, usdRate] = await Promise.all([
     sbGet('quisqueya_web_products?select=*&order=code&limit=1000'),
     getUsdRate(),
   ])
+  // Sin foto no hay catálogo: un producto sin web_image_url no se publica.
+  const products = rows.filter(p => p.web_image_url)
   return { products, usdRate }
+}
+
+// Slug de la ficha de producto: /p/<code-slug> (ej. "CD-177" → "cd-177").
+export function codeSlug(p) {
+  return (p.code || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
 }
 
 // Nombre para mostrar: quita el código pegado al final y normaliza
